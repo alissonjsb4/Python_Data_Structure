@@ -3,6 +3,306 @@
 # Todas as explicações detalhadas sobre a lógica de cada função estão dentro do código,
 # em forma de comentários linha a linha, conforme solicitado.
 #
+# Operações Simples (A):
+# - Inserir item no início:         Marketplace.inserir_inicio(nome, preco)
+#   Adiciona um novo item ao início da lista do marketplace.
+# - Inserir item no final:          Marketplace.inserir_fim(nome, preco)
+#   Adiciona um novo item ao final da lista do marketplace.
+# - Remover item por nome:          Marketplace.remover_por_nome(nome)
+#   Remove a primeira ocorrência de um item com o nome especificado.
+# - Verificar disponibilidade:      Marketplace.verificar_disponibilidade(nome)
+#   Verifica se um item com o nome especificado está presente no marketplace.
+#
+# Operações Intermediárias (B):
+# - Contar número de itens:         Marketplace.contar_itens()
+#   Retorna o número total de itens cadastrados no marketplace.
+# - Inverter lista:                 Marketplace.inverter()
+#   Inverte a ordem dos itens no marketplace (o último vira o primeiro).
+# - Inserir ordenado por preço:     Marketplace.inserir_ordenado_por_preco(nome, preco)
+#   Insere um novo item mantendo a lista ordenada em ordem crescente de preço.
+#
+# Funções Auxiliares e de Inicialização:
+# - Inicializar com dados padrão:   Marketplace.inicializar()
+#   Popula o marketplace com um conjunto de itens pré-definidos.
+# - Exibir marketplace:             Marketplace.exibir()
+#   Imprime todos os itens atualmente no marketplace.
+
+# Classe que representa um item individual no marketplace (equivalente a um Nó em uma lista encadeada).
+class Item:
+    # O método __init__ é o construtor da classe Item.
+    # Ele é chamado sempre que um novo objeto Item é criado.
+    def __init__(self, nome, preco):
+        self.nome = nome             # Atributo 'nome': armazena o nome do item (string).
+        self.preco = preco           # Atributo 'preco': armazena o preço do item (float).
+        self.proximo = None          # Atributo 'proximo': ponteiro para o próximo item na lista.
+                                     # Inicialmente é None, pois o item ainda não está ligado a outro.
+        self.anterior = None         # Atributo 'anterior': ponteiro para o item anterior na lista.
+                                     # Inicialmente é None, pois o item ainda não está ligado a outro.
+
+    # O método __str__ define como um objeto Item será representado como string.
+    # É útil para imprimir o item de forma legível.
+    def __str__(self):
+        # Retorna uma string formatada com o nome e o preço do item, com 2 casas decimais.
+        return f"{self.nome} - R${self.preco:.2f}"
+
+# Classe que representa a lista duplamente encadeada do marketplace.
+# Gerencia a coleção de itens e as operações sobre eles.
+class Marketplace:
+    # O método __init__ é o construtor da classe Marketplace.
+    def __init__(self):
+        self.head = None  # Atributo 'head': ponteiro para o primeiro item da lista.
+                          # Se a lista estiver vazia, 'head' será None.
+        self.tail = None  # Atributo 'tail': ponteiro para o último item da lista.
+                          # Se a lista estiver vazia, 'tail' será None.
+
+    # Inicializa o marketplace com um conjunto de dados fixos.
+    # Esta função é útil para testar as operações sem precisar inserir itens manualmente toda vez.
+    def inicializar(self):
+        # Lista de tuplas, onde cada tupla contém (nome do item, preco do item).
+        itens_iniciais =
+        # Percorre cada item na lista 'itens_iniciais'.
+        for nome, preco in itens_iniciais:
+            # Chama o método 'inserir_fim' para adicionar cada item ao final da lista.
+            # Isso garante que a ordem inicial seja mantida como definida na lista.
+            self.inserir_fim(nome, preco)
+        # Imprime uma mensagem de confirmação da inicialização.
+        print("Marketplace inicializado com itens padrão.")
+
+    # Operação Simples: Inserir item no início da lista.
+    # Complexidade de Tempo: O(1) - tempo constante, pois não depende do tamanho da lista.
+    def inserir_inicio(self, nome, preco):
+        novo = Item(nome, preco)      # Cria um novo objeto Item com o nome e preço fornecidos.
+        if not self.head:             # Verifica se a lista está vazia (se 'head' é None).
+            self.head = novo         # Se vazia, o novo item se torna o 'head'.
+            self.tail = novo         # E também se torna o 'tail', pois é o único item.
+        else:
+            novo.proximo = self.head     # O ponteiro 'proximo' do novo item aponta para o 'head' atual.
+            self.head.anterior = novo    # O ponteiro 'anterior' do antigo 'head' aponta de volta para o novo item.
+            self.head = novo             # Atualiza o 'head' da lista para ser o novo item.
+        print(f"Item '{nome}' inserido no início.") # Mensagem de confirmação.
+
+    # Operação Simples: Inserir item no final da lista.
+    # Complexidade de Tempo: O(1) - tempo constante, pois temos o ponteiro 'tail'.
+    def inserir_fim(self, nome, preco):
+        novo = Item(nome, preco)      # Cria um novo objeto Item.
+        if not self.tail:                 # Verifica se a lista está vazia (se 'tail' é None).
+            self.head = novo             # Se vazia, o novo item se torna o 'head'.
+            self.tail = novo             # E também se torna o 'tail'.
+        else:
+            self.tail.proximo = novo     # O ponteiro 'proximo' do antigo 'tail' aponta para o novo item.
+            novo.anterior = self.tail    # O ponteiro 'anterior' do novo item aponta para o antigo 'tail'.
+            self.tail = novo             # Atualiza o 'tail' da lista para ser o novo item.
+        print(f"Item '{nome}' inserido no final.") # Mensagem de confirmação.
+
+    # Operação Simples: Remover item pelo nome.
+    # Remove a primeira ocorrência de um item com o nome especificado.
+    # Complexidade de Tempo: O(N) - tempo linear, pois pode ser necessário percorrer toda a lista.
+    def remover_por_nome(self, nome):
+        atual = self.head                    # Inicia 'atual' no 'head' da lista.
+        while atual and atual.nome!= nome:  # Percorre a lista enquanto 'atual' não for None
+                                             # e o nome do item atual não for o nome procurado.
+            atual = atual.proximo            # Move 'atual' para o próximo item.
+
+        if not atual:                        # Se 'atual' se tornou None, o item não foi encontrado.
+            print("Item não encontrado.")    # Mensagem de item não encontrado.
+            return                           # Sai da função.
+
+        # Lógica para remover o item 'atual':
+        if atual.anterior:                   # Se 'atual' tem um item anterior (não é o head).
+            # O ponteiro 'proximo' do item anterior a 'atual' é ligado ao item posterior a 'atual'.
+            # Isso "pula" o item 'atual' na sequência de 'proximo'.
+            atual.anterior.proximo = atual.proximo
+        else:
+            # Se 'atual' não tem um item anterior, ele é o 'head'.
+            # O 'head' da lista é atualizado para ser o item 'proximo' de 'atual'.
+            self.head = atual.proximo       # Move o 'head' para o próximo item.
+
+        if atual.proximo:                   # Se 'atual' tem um item próximo (não é o tail).
+            # O ponteiro 'anterior' do item próximo a 'atual' é ligado ao item anterior a 'atual'.
+            # Isso "pula" o item 'atual' na sequência de 'anterior'.
+            atual.proximo.anterior = atual.anterior
+        else:
+            # Se 'atual' não tem um item próximo, ele é o 'tail'.
+            # O 'tail' da lista é atualizado para ser o item 'anterior' de 'atual'.
+            self.tail = atual.anterior      # Move o 'tail' para o item anterior.
+
+        # Tratamento especial se a lista ficar vazia após a remoção do único item.
+        if self.head is None:
+            self.tail = None
+
+        print(f"Item '{nome}' removido.")    # Mensagem de confirmação da remoção.
+
+    # Operação Simples: Verificar se um item existe no marketplace.
+    # Complexidade de Tempo: O(N) - tempo linear, pois pode ser necessário percorrer toda a lista.
+    def verificar_disponibilidade(self, nome):
+        atual = self.head                    # Inicia 'atual' no 'head'.
+        while atual:                         # Percorre a lista enquanto 'atual' não for None.
+            if atual.nome == nome:           # Se o nome do item atual for igual ao nome procurado.
+                print(f"Item '{nome}' está disponível.") # Mensagem de disponibilidade.
+                return True                  # Retorna True (item encontrado).
+            atual = atual.proximo            # Move 'atual' para o próximo item.
+        print(f"Item '{nome}' não está disponível.") # Mensagem de item não disponível.
+        return False                         # Retorna False (item não encontrado).
+
+    # Operação Intermediária: Contar o número de itens na lista.
+    # Complexidade de Tempo: O(N) - tempo linear, pois é necessário visitar cada nó.
+    def contar_itens(self):
+        atual = self.head                    # Inicia 'atual' no 'head'.
+        cont = 0                             # Inicializa o contador de itens.
+        while atual:                         # Percorre a lista enquanto 'atual' não for None.
+            cont += 1                        # Incrementa o contador para cada item.
+            atual = atual.proximo            # Move 'atual' para o próximo item.
+        print(f"Total de itens: {cont}")     # Imprime o total de itens.
+        return cont                          # Retorna o número total de itens.
+
+    # Operação Intermediária: Inverter a ordem da lista duplamente encadeada.
+    # Troca os ponteiros 'proximo' e 'anterior' de cada nó e, em seguida, troca 'head' e 'tail'.
+    # Complexidade de Tempo: O(N) - tempo linear, pois cada nó é processado uma vez.
+    def inverter(self):
+        # Verifica se a lista está vazia ou tem apenas um item. Nesses casos, não há o que inverter.
+        if self.head is None or self.head == self.tail:
+            print("Não há itens suficientes para inverter a ordem ou o marketplace está vazio.")
+            return
+
+        atual = self.head                    # Inicia 'atual' no 'head'.
+        # Percorre a lista enquanto 'atual' não for None.
+        while atual:
+            # Troca os ponteiros 'proximo' e 'anterior' do item 'atual'.
+            # O que era 'proximo' agora é 'anterior', e o que era 'anterior' agora é 'proximo'.
+            atual.proximo, atual.anterior = atual.anterior, atual.proximo
+            # Move 'atual' para o que era o seu 'anterior' original (que agora é o seu novo 'proximo').
+            # Isso permite continuar a travessia da lista na nova direção.
+            atual = atual.anterior
+        # Após o loop, todos os ponteiros 'proximo' e 'anterior' foram trocados.
+        # O antigo 'tail' agora aponta para o antigo 'head' (e vice-versa), mas os ponteiros 'head' e 'tail'
+        # da classe Marketplace ainda apontam para os itens originais.
+        # Troca os ponteiros 'head' e 'tail' da classe Marketplace para refletir a nova ordem.
+        self.head, self.tail = self.tail, self.head
+        print("Marketplace invertido.")      # Mensagem de confirmação da inversão.
+
+    # Operação Intermediária: Inserir item em ordem crescente de preço.
+    # Insere um novo item na lista, garantindo que a ordem crescente de preço seja mantida.
+    # Complexidade de Tempo: O(N) - tempo linear, pois pode ser necessário percorrer a lista para encontrar o ponto de inserção.
+    def inserir_ordenado_por_preco(self, nome, preco):
+        novo = Item(nome, preco)             # Cria um novo objeto Item.
+
+        # Caso 1: A lista está vazia ou o novo item tem o menor preço (deve ser o novo head).
+        if not self.head or preco < self.head.preco:
+            # Chama o método 'inserir_inicio' para lidar com este caso.
+            # Este método já atualiza 'head' e 'tail' corretamente para lista vazia ou novo head.
+            self.inserir_inicio(nome, preco)
+            print(f"Item '{nome}' (R${preco:.2f}) inserido no início (mantendo ordem).")
+            return                           # Sai da função.
+
+        # Caso 2: O novo item deve ser inserido em algum lugar no meio ou no final da lista.
+        atual = self.head                    # Inicia 'atual' no 'head'.
+        # Percorre a lista enquanto 'atual.proximo' não for None (não chegou ao último item)
+        # E o preço do item 'proximo' de 'atual' for MENOR que o preço do novo item.
+        # Isso significa que o novo item deve ser inserido DEPOIS de 'atual.proximo'.
+        while atual.proximo and atual.proximo.preco < preco:
+            atual = atual.proximo            # Move 'atual' para o próximo item.
+
+        # Neste ponto, 'atual' é o item ANTES do qual o 'novo' item deve ser inserido,
+        # ou 'atual' é o último item se o 'novo' item tiver o maior preço.
+
+        novo.proximo = atual.proximo         # O ponteiro 'proximo' do novo item aponta para o item que 'atual' apontava.
+        novo.anterior = atual                # O ponteiro 'anterior' do novo item aponta para 'atual'.
+
+        if atual.proximo:                    # Se 'atual' não é o último item (ou seja, tem um 'proximo').
+            # O ponteiro 'anterior' do item que estava depois de 'atual' agora aponta para o novo item.
+            atual.proximo.anterior = novo
+        else:
+            # Se 'atual' é o último item, o novo item se torna o novo 'tail'.
+            self.tail = novo
+        atual.proximo = novo                 # O ponteiro 'proximo' de 'atual' agora aponta para o novo item.
+        print(f"Item '{nome}' (R${preco:.2f}) inserido (mantendo ordem).") # Mensagem de confirmação.
+
+    # Função Auxiliar: Exibir todos os itens da lista.
+    # Percorre a lista do 'head' ao 'tail' e imprime cada item.
+    # Complexidade de Tempo: O(N) - tempo linear, pois é necessário visitar cada nó.
+    def exibir(self):
+        atual = self.head                    # Inicia 'atual' no 'head'.
+        if not atual:                        # Se 'head' é None, a lista está vazia.
+            print("Marketplace vazio.")      # Mensagem de marketplace vazio.
+            return                           # Sai da função.
+        print("\n--- Itens no Marketplace ---") # Cabeçalho para a exibição.
+        while atual:                         # Percorre a lista enquanto 'atual' não for None.
+            print(atual)                     # Imprime a representação em string do item atual.
+            atual = atual.proximo            # Move 'atual' para o próximo item.
+        print("----------------------------") # Rodapé para a exibição.
+
+# Função principal interativa para demonstrar o uso do Marketplace.
+def main():
+    mp = Marketplace()  # Cria uma nova instância da classe Marketplace (lista vazia).
+
+    # Loop principal do menu interativo.
+    while True:
+        print("\n===== MENU DO MARKETPLACE =====")
+        print("0. Inicializar com dados padrão")
+        print("1. Inserir item no início")
+        print("2. Inserir item no final")
+        print("3. Remover item por nome")
+        print("4. Verificar disponibilidade")
+        print("5. Contar número de itens")
+        print("6. Inverter lista")
+        print("7. Inserir ordenado por preço")
+        print("8. Exibir marketplace")
+        print("9. Sair")
+
+        opcao = input("Escolha uma opção: ") # Solicita a escolha do usuário.
+
+        # Bloco condicional para executar a opção escolhida.
+        if opcao == "0":
+            mp.inicializar() # Chama a função para inicializar o marketplace.
+
+        elif opcao == "1":
+            nome = input("Nome do item: ")   # Solicita o nome do item.
+            preco = float(input("Preço do item: ")) # Solicita o preço e converte para float.
+            mp.inserir_inicio(nome, preco)   # Chama a função para inserir no início.
+
+        elif opcao == "2":
+            nome = input("Nome do item: ")
+            preco = float(input("Preço do item: "))
+            mp.inserir_fim(nome, preco)      # Chama a função para inserir no final.
+
+        elif opcao == "3":
+            nome = input("Nome do item a remover: ")
+            mp.remover_por_nome(nome)        # Chama a função para remover por nome.
+
+        elif opcao == "4":
+            nome = input("Nome do item a verificar: ")
+            mp.verificar_disponibilidade(nome) # Chama a função para verificar disponibilidade.
+
+        elif opcao == "5":
+            mp.contar_itens()                # Chama a função para contar itens.
+
+        elif opcao == "6":
+            mp.inverter()                    # Chama a função para inverter a lista.
+
+        elif opcao == "7":
+            nome = input("Nome do item: ")
+            preco = float(input("Preço do item: "))
+            mp.inserir_ordenado_por_preco(nome, preco) # Chama a função para inserir ordenado.
+
+        elif opcao == "8":
+            mp.exibir()                      # Chama a função para exibir o marketplace.
+
+        elif opcao == "9":
+            print("Saindo do programa...")   # Mensagem de saída.
+            break                            # Sai do loop, encerrando o programa.
+
+        else:
+            print("Opção inválida. Tente novamente.") # Mensagem para opção inválida.
+
+# Garante que a função main() seja chamada apenas quando o script é executado diretamente.
+# Isso impede que 'main()' seja executado se o arquivo for importado como um módulo em outro script.
+if __name__ == "__main__":
+    main()
+# Sumário das Operações Implementadas:
+# Este bloco serve como um guia rápido para as funções disponíveis na classe Marketplace.
+# Todas as explicações detalhadas sobre a lógica de cada função estão dentro do código,
+# em forma de comentários linha a linha, conforme solicitado.
+#
 # Operações Simples:
 # - Inserir no Início:         Marketplace.insert_at_beginning(name, price)
 #   Adiciona um novo item ao início da lista do marketplace.
