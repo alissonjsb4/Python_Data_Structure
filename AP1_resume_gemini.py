@@ -59,7 +59,12 @@ class Marketplace:
     # Esta função é útil para testar as operações sem precisar inserir itens manualmente toda vez.
     def inicializar(self):
         # Lista de tuplas, onde cada tupla contém (nome do item, preco do item).
-        itens_iniciais =
+        itens_iniciais = [
+    ("Maçã", 1.50),
+    ("Banana", 0.90),
+    ("Leite", 4.80),
+    ("Pão", 2.30)
+]
         # Percorre cada item na lista 'itens_iniciais'.
         for nome, preco in itens_iniciais:
             # Chama o método 'inserir_fim' para adicionar cada item ao final da lista.
